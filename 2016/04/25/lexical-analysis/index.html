@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>编译原理——词法分析————xyiyy | yoyolynn&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这部分的实验主要是实现词法分析的功能
+方法一比较简单的方法是通过每次枚举所有的关键字，然后不断暴力匹配，复杂度平方
+方法二与方法一类似的是使用正则表达式，相对来说，略好一些，不过，这种方法也需要不断去尝试匹配，复杂度还是平方级的ps:偷偷附上队友用正则实现的代码他看不到看不到我觉得他写的很好">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编译原理——词法分析————xyiyy">
+<meta property="og:url" content="http://yoursite.com/child/2016/04/25/lexical-analysis/index.html">
+<meta property="og:site_name" content="yoyolynn's blog">
+<meta property="og:description" content="这部分的实验主要是实现词法分析的功能
+方法一比较简单的方法是通过每次枚举所有的关键字，然后不断暴力匹配，复杂度平方
+方法二与方法一类似的是使用正则表达式，相对来说，略好一些，不过，这种方法也需要不断去尝试匹配，复杂度还是平方级的ps:偷偷附上队友用正则实现的代码他看不到看不到我觉得他写的很好">
+<meta property="og:updated_time" content="2016-04-25T13:36:49.193Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编译原理——词法分析————xyiyy">
+<meta name="twitter:description" content="这部分的实验主要是实现词法分析的功能
+方法一比较简单的方法是通过每次枚举所有的关键字，然后不断暴力匹配，复杂度平方
+方法二与方法一类似的是使用正则表达式，相对来说，略好一些，不过，这种方法也需要不断去尝试匹配，复杂度还是平方级的ps:偷偷附上队友用正则实现的代码他看不到看不到我觉得他写的很好">
+  
+    <link rel="alternative" href="/atom.xml" title="yoyolynn&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img src="/img/yl.png" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">yoyolynn</a></h1>
+		</hgroup>
+
+		
+		<p class="header-subtitle">热爱生活的小琳同学</p>
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>Menu</li>
+						<li>Tags</li>
+						
+						<li>Links</li>
+						
+						
+						<li>Über</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="#" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+					        
+								<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">奥巴马的博客</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">卡卡的美丽传说</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">本泽马的博客</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">吉格斯的博客</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">习大大大不同</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://localhost:4000/">托蒂的博客</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">我是谁，我从哪里来，我到哪里去？我就是我，是颜色不一样的吃货…</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">yoyolynn</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img src="/img/yl.png" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">yoyolynn</h1>
+			</hgroup>
+			
+			<p class="header-subtitle">热爱生活的小琳同学</p>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="#" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="#" title="weibo">weibo</a>
+			        
+						<a class="zhihu" target="_blank" href="#" title="zhihu">zhihu</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-lexical-analysis" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/04/25/lexical-analysis/" class="article-date">
+  	<time datetime="2016-04-25T13:31:22.830Z" itemprop="datePublished">2016-04-25</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      编译原理——词法分析————xyiyy
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这部分的实验主要是实现词法分析的功能</p>
+<h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p>比较简单的方法是通过每次枚举所有的关键字，然后不断暴力匹配，复杂度平方</p>
+<h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><p>与方法一类似的是使用正则表达式，相对来说，略好一些，不过，这种方法也需要不断去尝试匹配，复杂度还是平方级的<br>ps:偷偷附上队友用正则实现的代码<a href="http://paste.ubuntu.com/15941872/" target="_blank" rel="external">他看不到看不到</a><br>我觉得他写的很好<br><a id="more"></a></p>
+<h4 id="方法三"><a href="#方法三" class="headerlink" title="方法三"></a>方法三</h4><p>我设计了一种复杂度为线性的方法。首先，词法分析的这个问题可以理解为              一个字符串模式匹配的问题,而且很明显这是一个<strong><em>多模式串匹配</em></strong>的问题，所以这个地方不能用大家以往熟知的kmp来解决这个问题。当然这个问题和模式匹配还有一定的区别，所以这里我们主要采用了<strong><em>字典树</em></strong>这一数据结构来处理问题。<br>大致的思想可以理解为对于所有的模式串建立一棵字典树（每个模式串的结尾都会打上一个标记tail），然后每次对于目标串不断往下匹配直到不能匹配。在不匹配的时候，可能有三种情况：</p>
+<ol>
+<li>这部分的字符是一个之前没有出现过的标识符，那么不断贪心取，取到不能取之后将这段字符标记为标识符插入到字典树中。</li>
+<li>这部分的起始字符是数字，那么由于标识符一定是以字母开头的，则可以不断贪心往后取，直到不是数字。</li>
+<li>这部分的字符是空格，制表符</li>
+</ol>
+<p>主要的代码部分都在字典树的query函数中<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//#####################</span></span><br><span class="line"><span class="comment">//Author:fraud</span></span><br><span class="line"><span class="comment">//Blog: http://www.cnblogs.com/fraud/</span></span><br><span class="line"><span class="comment">//#####################</span></span><br><span class="line"><span class="comment">//#pragma comment(linker, "/STACK:102400000,102400000")</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> XINF INT_MAX</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> INF 0x3FFFFFFF</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> mp(X,Y) make_pair(X,Y)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> pb(X) push_back(X)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> rep(X,N) for(int X=0;X&lt;N;X++)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> rep2(X,L,R) for(int X=L;X&lt;=R;X++)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> dep(X,R,L) for(int X=R;X&gt;=L;X--)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> clr(A,X) memset(A,X,sizeof(A))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IT iterator</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; PII;</span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">vector</span>&lt;PII&gt; VII;</span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; VI;</span><br><span class="line"><span class="built_in">string</span> basic_word[]=&#123;<span class="string">"begin"</span>,<span class="string">"call"</span>,<span class="string">"const"</span>,<span class="string">"do"</span>,<span class="string">"end"</span>,<span class="string">"if"</span>,<span class="string">"odd"</span>,<span class="string">"procedure"</span>,<span class="string">"read"</span>,<span class="string">"then"</span>,<span class="string">"var"</span>,<span class="string">"while"</span>,<span class="string">"write"</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> basic_code[]=&#123;<span class="string">"beginsym"</span>,<span class="string">"callsym"</span>,<span class="string">"constsym"</span>,<span class="string">"dosym"</span>,<span class="string">"endsym"</span>,<span class="string">"ifsym"</span>,<span class="string">"oddsym"</span>,<span class="string">"proceduresym"</span>,<span class="string">"readsym"</span>,<span class="string">"thensym"</span>,<span class="string">"varsym"</span>,<span class="string">"whilesym"</span>,<span class="string">"writesym"</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> cal_char[]=&#123;<span class="string">"+"</span>,<span class="string">"-"</span>,<span class="string">"*"</span>,<span class="string">"/"</span>,<span class="string">"="</span>,<span class="string">"#"</span>,<span class="string">"&lt;"</span>,<span class="string">"&lt;="</span>,<span class="string">"&gt;"</span>,<span class="string">"&gt;="</span>,<span class="string">":="</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> cal_code[]=&#123;<span class="string">"plus"</span>,<span class="string">"minus"</span>,<span class="string">"times"</span>,<span class="string">"slash"</span>,<span class="string">"eql"</span>,<span class="string">"neq"</span>,<span class="string">"lss"</span>,<span class="string">"leq"</span>,<span class="string">"gtr"</span>,<span class="string">"geq"</span>,<span class="string">"becomes"</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> sep_char[]=&#123;<span class="string">"("</span>,<span class="string">")"</span>,<span class="string">","</span>,<span class="string">";"</span>,<span class="string">"."</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> sep_code[]=&#123;<span class="string">"lparen"</span>,<span class="string">"rparen"</span>,<span class="string">"comma"</span>,<span class="string">"semicolon"</span>,<span class="string">"period"</span>&#125;;</span><br><span class="line"><span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="built_in">string</span>&gt;ms;</span><br><span class="line"><span class="keyword">struct</span> Trie&#123;</span><br><span class="line">    <span class="keyword">int</span> Next[<span class="number">1010</span>][<span class="number">256</span>],tail[<span class="number">1010</span>];</span><br><span class="line">    <span class="keyword">int</span> root,L;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">1</span>;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">newnode</span><span class="params">()</span></span>&#123;</span><br><span class="line">        rep(i,<span class="number">256</span>)Next[L][i] = <span class="number">0</span>;</span><br><span class="line">        tail[L++] = <span class="number">0</span>;</span><br><span class="line">        return L - <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        L = <span class="number">0</span>;</span><br><span class="line">        num = <span class="number">1</span>;</span><br><span class="line">        root = newnode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(<span class="built_in">string</span> buf)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = buf.length();</span><br><span class="line">        <span class="keyword">int</span> now = root;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span> ; i &lt; len ; i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!Next[now][buf[i]])Next[now][buf[i]] = newnode();</span><br><span class="line">            now = Next[now][buf[i]];</span><br><span class="line">        &#125;</span><br><span class="line">        tail[now] = num;</span><br><span class="line">        return num++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">InsertIdent</span><span class="params">(<span class="built_in">string</span> buf)</span></span>&#123;</span><br><span class="line">        ms[insert(buf)] = <span class="string">"(ident , "</span>  + buf + <span class="string">")"</span>;</span><br><span class="line">        out(<span class="string">"(ident , "</span>  + buf + <span class="string">")"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">query</span><span class="params">(<span class="built_in">string</span> buf)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = buf.length();</span><br><span class="line">        <span class="keyword">int</span> now = root;</span><br><span class="line">        <span class="built_in">string</span> identbuf = <span class="string">""</span>;</span><br><span class="line">        rep(i,len)&#123;</span><br><span class="line">            now = Next[now][buf[i]];</span><br><span class="line">            identbuf = identbuf + buf[i];</span><br><span class="line">            <span class="keyword">if</span>(now == root)&#123;</span><br><span class="line">                <span class="keyword">if</span>(<span class="built_in">isdigit</span>(buf[i]) &amp;&amp; identbuf.length() == <span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="built_in">string</span> str = <span class="string">"(number,"</span>;</span><br><span class="line">                    str += buf[i];</span><br><span class="line">                    <span class="keyword">while</span>(i + <span class="number">1</span> &lt; len)&#123;</span><br><span class="line">                        <span class="keyword">if</span>(<span class="built_in">isdigit</span>(buf[i+<span class="number">1</span>]))str = str + buf[i + <span class="number">1</span>];</span><br><span class="line">                        <span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">                        i++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    str = str + <span class="string">")"</span>;</span><br><span class="line">                    out(str);</span><br><span class="line">                    identbuf = <span class="string">""</span>;</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(isalpha(buf[i]) || isdigit(buf[i]))&#123;</span><br><span class="line">                    <span class="keyword">while</span>(i + <span class="number">1</span> &lt; len)&#123;</span><br><span class="line">                        <span class="keyword">if</span>(isdigit(buf[i+<span class="number">1</span>])||isalpha(buf[i+<span class="number">1</span>]))&#123;</span><br><span class="line">                            identbuf = identbuf + buf[i + <span class="number">1</span>];</span><br><span class="line">                        &#125;<span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">                        i++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    InsertIdent(identbuf);</span><br><span class="line">                    identbuf = <span class="string">""</span>;</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(buf[i] == <span class="string">' '</span> || buf[i] == <span class="string">'\t'</span>)identbuf = <span class="string">""</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(tail[now])&#123;</span><br><span class="line">                <span class="keyword">bool</span> flag = <span class="built_in">isdigit</span>(buf[i]) || <span class="built_in">isalpha</span>(buf[i]);</span><br><span class="line">                <span class="keyword">if</span>(i == len - <span class="number">1</span> || (flag &amp;&amp; (!isdigit(buf[i+<span class="number">1</span>] &amp;&amp; !isalpha(buf[i+<span class="number">1</span>])))) || (!flag &amp;&amp; !tail[Next[now][buf[i+<span class="number">1</span>]]]))&#123;</span><br><span class="line">                    <span class="built_in">string</span> str = ms[tail[now]];</span><br><span class="line">                    out(str);</span><br><span class="line">                    identbuf = <span class="string">""</span>;</span><br><span class="line">                    now = root;</span><br><span class="line">                &#125;<span class="keyword">else</span> <span class="keyword">if</span>(Next[now][buf[i+<span class="number">1</span>]] == root)&#123;</span><br><span class="line">                    <span class="keyword">while</span>(i + <span class="number">1</span> &lt; len)&#123;</span><br><span class="line">                        <span class="keyword">if</span>(isdigit(buf[i+<span class="number">1</span>])||isalpha(buf[i+<span class="number">1</span>]))&#123;</span><br><span class="line">                            identbuf = identbuf + buf[i + <span class="number">1</span>];</span><br><span class="line">                        &#125;<span class="keyword">else</span> <span class="keyword">break</span>;</span><br><span class="line">                        i++;</span><br><span class="line">                    &#125;</span><br><span class="line">                    InsertIdent(identbuf);</span><br><span class="line">                    identbuf = <span class="string">""</span>;</span><br><span class="line">                    now = root;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">out</span><span class="params">(<span class="built_in">string</span> str)</span></span>&#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; str &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;ac;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ios::sync_with_stdio(<span class="literal">false</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">ifdef</span> LOCAL</span></span><br><span class="line">        freopen(<span class="string">"in.txt"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">// LOCAL</span></span></span><br><span class="line">    <span class="built_in">string</span> str;</span><br><span class="line">    ac.init();</span><br><span class="line">    rep(i,<span class="number">13</span>)ms[ac.insert(basic_word[i])] = <span class="string">"("</span> + basic_code[i] + <span class="string">" , "</span>  + basic_word[i] + <span class="string">")"</span>;</span><br><span class="line">    rep(i,<span class="number">11</span>)ms[ac.insert(cal_char[i])] = <span class="string">"("</span> + cal_code[i] + <span class="string">" , "</span> + cal_char[i] + <span class="string">")"</span>;</span><br><span class="line">    rep(i,<span class="number">5</span>)ms[ac.insert(sep_char[i])] = <span class="string">"("</span> + sep_code[i] + <span class="string">" , "</span> + sep_char[i] + <span class="string">")"</span>;</span><br><span class="line">    <span class="keyword">while</span>(getline(cin,str,<span class="string">'\n'</span>))&#123;</span><br><span class="line">        transform(str.begin(), str.end(), str.begin(), ::<span class="built_in">tolower</span>);</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"#####################"</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; str &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"#####################"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        ac.query(str);</span><br><span class="line">    &#125;</span><br><span class="line">    return <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输入文件 in.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Const num=100;</span><br><span class="line">Var a1,b2;</span><br><span class="line">Begin</span><br><span class="line">    Read(A1);</span><br><span class="line">    b2:=(+a1+1)+num;</span><br><span class="line">    write(a1,b2);</span><br><span class="line">end.</span><br></pre></td></tr></table></figure></p>
+<p>运行结果 out.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">#####################</span><br><span class="line">const num=100;</span><br><span class="line">#####################</span><br><span class="line">(constsym , const)</span><br><span class="line">(ident , num)</span><br><span class="line">(eql , =)</span><br><span class="line">(ident , 100)</span><br><span class="line">(semicolon , ;)</span><br><span class="line">#####################</span><br><span class="line">var a1,b2;</span><br><span class="line">#####################</span><br><span class="line">(varsym , var)</span><br><span class="line">(ident , a1)</span><br><span class="line">(comma , ,)</span><br><span class="line">(ident , b2)</span><br><span class="line">(semicolon , ;)</span><br><span class="line">#####################</span><br><span class="line">begin</span><br><span class="line">#####################</span><br><span class="line">(beginsym , begin)</span><br><span class="line">#####################</span><br><span class="line">    read(a1);</span><br><span class="line">#####################</span><br><span class="line">(readsym , read)</span><br><span class="line">(lparen , ()</span><br><span class="line">(ident , a1)</span><br><span class="line">(rparen , ))</span><br><span class="line">(semicolon , ;)</span><br><span class="line">#####################</span><br><span class="line">    b2:=(+a1+1)+num;</span><br><span class="line">#####################</span><br><span class="line">(ident , b2)</span><br><span class="line">(becomes , :=)</span><br><span class="line">(lparen , ()</span><br><span class="line">(plus , +)</span><br><span class="line">(ident , a1)</span><br><span class="line">(plus , +)</span><br><span class="line">(plus , +)</span><br><span class="line">(ident , num)</span><br><span class="line">(semicolon , ;)</span><br><span class="line">#####################</span><br><span class="line">    write(a1,b2);</span><br><span class="line">#####################</span><br><span class="line">(writesym , write)</span><br><span class="line">(lparen , ()</span><br><span class="line">(ident , a1)</span><br><span class="line">(comma , ,)</span><br><span class="line">(ident , b2)</span><br><span class="line">(rparen , ))</span><br><span class="line">(semicolon , ;)</span><br><span class="line">#####################</span><br><span class="line">end.</span><br><span class="line">#####################</span><br><span class="line">(endsym , end)</span><br><span class="line">(period , .)</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="lexical-analysis" data-title="编译原理——词法分析————xyiyy" data-url="http://yoursite.com/child/2016/04/25/lexical-analysis/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 yoyolynn
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: false,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

@@ -32,7 +32,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img src="http://img2.imgtn.bdimg.com/it/u=4141212428,1298498752&amp;fm=23&amp;gp=0.jpg" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+			<img src="/img/yl.png" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
 			
 		</a>
 
@@ -41,7 +41,7 @@
 		</hgroup>
 
 		
-		<p class="header-subtitle">keep moving, keep dreaming</p>
+		<p class="header-subtitle">热爱生活的小琳同学</p>
 		
 
 		
@@ -95,8 +95,6 @@
 							<li><a href="/">主页</a></li>
 				        
 							<li><a href="/archives">所有文章</a></li>
-				        
-							<li><a href="/tags/随笔">随笔</a></li>
 				        
 						</ul>
 					</nav>
@@ -164,14 +162,14 @@
 		<header id="header" class="inner">
 			<div class="profilepic">
 			
-				<img src="http://img2.imgtn.bdimg.com/it/u=4141212428,1298498752&amp;fm=23&amp;gp=0.jpg" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
+				<img src="/img/yl.png" class="js-avatar" style="width: 100%;height: 100%;opacity: 1;">
 			
 			</div>
 			<hgroup>
 			  <h1 class="header-author">yoyolynn</h1>
 			</hgroup>
 			
-			<p class="header-subtitle">keep moving, keep dreaming</p>
+			<p class="header-subtitle">热爱生活的小琳同学</p>
 			
 			<nav class="header-menu">
 				<ul>
@@ -179,8 +177,6 @@
 					<li><a href="/">主页</a></li>
 		        
 					<li><a href="/archives">所有文章</a></li>
-		        
-					<li><a href="/tags/随笔">随笔</a></li>
 		        
 		        <div class="clearfix"></div>
 				</ul>
@@ -202,11 +198,11 @@
 
       <div class="body-wrap">
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-lexical-analysis" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/04/23/hello-world/" class="article-date">
-  	<time datetime="2016-04-23T11:06:45.309Z" itemprop="datePublished">2016-04-23</time>
+      <a href="/2016/04/25/lexical-analysis/" class="article-date">
+  	<time datetime="2016-04-25T13:31:22.830Z" itemprop="datePublished">2016-04-25</time>
 </a>
     </div>
   
@@ -219,7 +215,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/04/23/hello-world/">Hello World</a>
+      <a class="article-title" href="/2016/04/25/lexical-analysis/">编译原理——词法分析————xyiyy</a>
     </h1>
   
 
@@ -228,16 +224,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
+        <p>这部分的实验主要是实现词法分析的功能</p>
+<h4 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h4><p>比较简单的方法是通过每次枚举所有的关键字，然后不断暴力匹配，复杂度平方</p>
+<h4 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h4><p>与方法一类似的是使用正则表达式，相对来说，略好一些，不过，这种方法也需要不断去尝试匹配，复杂度还是平方级的<br>ps:偷偷附上队友用正则实现的代码<a href="http://paste.ubuntu.com/15941872/">他看不到看不到</a><br>我觉得他写的很好<br>
       
     </div>
     
@@ -246,6 +235,10 @@
       
       
 
+      
+        <p class="article-more-link">
+          <a  href="/2016/04/25/lexical-analysis/#more">more >></a>
+        </p>
       
       <div class="clearfix"></div>
     </div>
